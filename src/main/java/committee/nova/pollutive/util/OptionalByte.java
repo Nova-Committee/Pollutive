@@ -1,9 +1,11 @@
 package committee.nova.pollutive.util;
 
 import committee.nova.pollutive.util.function.ByteConsumer;
+import committee.nova.pollutive.util.function.ByteFunction;
 import committee.nova.pollutive.util.function.ByteSupplier;
 
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -99,6 +101,26 @@ public final class OptionalByte implements IOptionalNumeric<Byte> {
             return value;
         } else {
             throw exceptionSupplier.get();
+        }
+    }
+
+    public <U> Optional<U> map(ByteFunction<U> mapper) {
+        Objects.requireNonNull(mapper);
+        if (!isPresent()) {
+            return Optional.empty();
+        } else {
+            return Optional.ofNullable(mapper.apply(value));
+        }
+    }
+
+    public <U> Optional<U> flatMap(ByteFunction<? extends Optional<? extends U>> mapper) {
+        Objects.requireNonNull(mapper);
+        if (!isPresent()) {
+            return Optional.empty();
+        } else {
+            @SuppressWarnings("unchecked")
+            Optional<U> r = (Optional<U>) mapper.apply(value);
+            return Objects.requireNonNull(r);
         }
     }
 

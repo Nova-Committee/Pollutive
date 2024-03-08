@@ -1,9 +1,11 @@
 package committee.nova.pollutive.util;
 
 import committee.nova.pollutive.util.function.FloatConsumer;
+import committee.nova.pollutive.util.function.FloatFunction;
 import committee.nova.pollutive.util.function.FloatSupplier;
 
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -99,6 +101,26 @@ public final class OptionalFloat implements IOptionalNumeric<Float> {
             return value;
         } else {
             throw exceptionSupplier.get();
+        }
+    }
+
+    public <U> Optional<U> map(FloatFunction<U> mapper) {
+        Objects.requireNonNull(mapper);
+        if (!isPresent()) {
+            return Optional.empty();
+        } else {
+            return Optional.ofNullable(mapper.apply(value));
+        }
+    }
+
+    public <U> Optional<U> flatMap(FloatFunction<? extends Optional<? extends U>> mapper) {
+        Objects.requireNonNull(mapper);
+        if (!isPresent()) {
+            return Optional.empty();
+        } else {
+            @SuppressWarnings("unchecked")
+            Optional<U> r = (Optional<U>) mapper.apply(value);
+            return Objects.requireNonNull(r);
         }
     }
 

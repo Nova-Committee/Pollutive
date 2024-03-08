@@ -3,8 +3,10 @@ package committee.nova.pollutive.util;
 import committee.nova.pollutive.api.IHasVanillaImpl;
 
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.IntConsumer;
+import java.util.function.IntFunction;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 
@@ -101,6 +103,26 @@ public final class OptionalInt implements IOptionalNumeric<Integer>, IHasVanilla
             return value;
         } else {
             throw exceptionSupplier.get();
+        }
+    }
+
+    public <U> Optional<U> map(IntFunction<U> mapper) {
+        Objects.requireNonNull(mapper);
+        if (!isPresent()) {
+            return Optional.empty();
+        } else {
+            return Optional.ofNullable(mapper.apply(value));
+        }
+    }
+
+    public <U> Optional<U> flatMap(IntFunction<? extends Optional<? extends U>> mapper) {
+        Objects.requireNonNull(mapper);
+        if (!isPresent()) {
+            return Optional.empty();
+        } else {
+            @SuppressWarnings("unchecked")
+            Optional<U> r = (Optional<U>) mapper.apply(value);
+            return Objects.requireNonNull(r);
         }
     }
 

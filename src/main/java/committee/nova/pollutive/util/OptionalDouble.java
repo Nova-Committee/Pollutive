@@ -3,8 +3,10 @@ package committee.nova.pollutive.util;
 import committee.nova.pollutive.api.IHasVanillaImpl;
 
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.DoubleConsumer;
+import java.util.function.DoubleFunction;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -100,6 +102,26 @@ public final class OptionalDouble implements IOptionalNumeric<Double>, IHasVanil
             return value;
         } else {
             throw exceptionSupplier.get();
+        }
+    }
+
+    public <U> Optional<U> map(DoubleFunction<U> mapper) {
+        Objects.requireNonNull(mapper);
+        if (!isPresent()) {
+            return Optional.empty();
+        } else {
+            return Optional.ofNullable(mapper.apply(value));
+        }
+    }
+
+    public <U> Optional<U> flatMap(DoubleFunction<? extends Optional<? extends U>> mapper) {
+        Objects.requireNonNull(mapper);
+        if (!isPresent()) {
+            return Optional.empty();
+        } else {
+            @SuppressWarnings("unchecked")
+            Optional<U> r = (Optional<U>) mapper.apply(value);
+            return Objects.requireNonNull(r);
         }
     }
 

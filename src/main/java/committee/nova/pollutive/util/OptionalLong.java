@@ -3,8 +3,10 @@ package committee.nova.pollutive.util;
 import committee.nova.pollutive.api.IHasVanillaImpl;
 
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.LongConsumer;
+import java.util.function.LongFunction;
 import java.util.function.LongSupplier;
 import java.util.function.Supplier;
 
@@ -101,6 +103,26 @@ public final class OptionalLong implements IOptionalNumeric<Long>, IHasVanillaIm
             return value;
         } else {
             throw exceptionSupplier.get();
+        }
+    }
+
+    public <U> Optional<U> map(LongFunction<U> mapper) {
+        Objects.requireNonNull(mapper);
+        if (!isPresent()) {
+            return Optional.empty();
+        } else {
+            return Optional.ofNullable(mapper.apply(value));
+        }
+    }
+
+    public <U> Optional<U> flatMap(LongFunction<? extends Optional<? extends U>> mapper) {
+        Objects.requireNonNull(mapper);
+        if (!isPresent()) {
+            return Optional.empty();
+        } else {
+            @SuppressWarnings("unchecked")
+            Optional<U> r = (Optional<U>) mapper.apply(value);
+            return Objects.requireNonNull(r);
         }
     }
 
