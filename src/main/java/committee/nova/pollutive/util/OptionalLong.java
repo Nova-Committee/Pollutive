@@ -1,12 +1,14 @@
 package committee.nova.pollutive.util;
 
+import committee.nova.pollutive.api.IHasVanillaImpl;
+
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.function.LongConsumer;
 import java.util.function.LongSupplier;
 import java.util.function.Supplier;
 
-public final class OptionalLong implements IOptionalNumeric<Long> {
+public final class OptionalLong implements IOptionalNumeric<Long>, IHasVanillaImpl<java.util.OptionalLong> {
     private static final OptionalLong EMPTY = new OptionalLong();
 
     private final boolean isPresent;
@@ -128,5 +130,10 @@ public final class OptionalLong implements IOptionalNumeric<Long> {
         return isPresent
                 ? String.format("OptionalLong[%s]", value)
                 : "OptionalLong.empty";
+    }
+
+    @Override
+    public java.util.OptionalLong toVanilla() {
+        return isPresent ? java.util.OptionalLong.of(value) : java.util.OptionalLong.empty();
     }
 }

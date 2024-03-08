@@ -1,12 +1,14 @@
 package committee.nova.pollutive.util;
 
+import committee.nova.pollutive.api.IHasVanillaImpl;
+
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
-public final class OptionalDouble implements IOptionalNumeric<Double> {
+public final class OptionalDouble implements IOptionalNumeric<Double>, IHasVanillaImpl<java.util.OptionalDouble> {
     private static final OptionalDouble EMPTY = new OptionalDouble();
 
     private final boolean isPresent;
@@ -127,5 +129,10 @@ public final class OptionalDouble implements IOptionalNumeric<Double> {
         return isPresent
                 ? String.format("OptionalDouble[%s]", value)
                 : "OptionalDouble.empty";
+    }
+
+    @Override
+    public java.util.OptionalDouble toVanilla() {
+        return isPresent ? java.util.OptionalDouble.of(value) : java.util.OptionalDouble.empty();
     }
 }

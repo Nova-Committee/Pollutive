@@ -1,12 +1,14 @@
 package committee.nova.pollutive.util;
 
+import committee.nova.pollutive.api.IHasVanillaImpl;
+
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 
-public final class OptionalInt implements IOptionalNumeric<Integer> {
+public final class OptionalInt implements IOptionalNumeric<Integer>, IHasVanillaImpl<java.util.OptionalInt> {
     private static final OptionalInt EMPTY = new OptionalInt();
 
     private final boolean isPresent;
@@ -128,5 +130,10 @@ public final class OptionalInt implements IOptionalNumeric<Integer> {
         return isPresent
                 ? String.format("OptionalInt[%s]", value)
                 : "OptionalInt.empty";
+    }
+
+    @Override
+    public java.util.OptionalInt toVanilla() {
+        return isPresent ? java.util.OptionalInt.of(value) : java.util.OptionalInt.empty();
     }
 }
